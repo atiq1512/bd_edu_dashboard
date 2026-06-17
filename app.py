@@ -18,7 +18,17 @@ st.set_page_config(
 
 @st.cache_data
 def load_data():
-    return pd.read_csv("cleaned_data.csv")
+    df = pd.read_csv("data.csv")
+
+    # Derive IntentionStatus from entrepreneurial trait scores
+    # A student is considered to have entrepreneurial intention
+    # if they score above 3 in at least 3 of these 4 key traits
+    key_traits = ["Perseverance", "SelfConfidence", "StrongNeedToAchieve", "DesireToTakeInitiative"]
+    df["IntentionStatus"] = (
+        (df[key_traits] > 3).sum(axis=1) >= 3
+    ).astype(int)
+
+    return df
 
 df = load_data()
 
@@ -95,11 +105,13 @@ st.divider()
 
 st.subheader("Entrepreneurial Intention Distribution")
 
+intention_labels = df["IntentionStatus"].map({1: "Has Intention", 0: "No Intention"})
 fig1 = px.histogram(
-    df,
-    x="IntentionStatus",
-    color="IntentionStatus",
-    text_auto=True
+    df.assign(Intention=intention_labels),
+    x="Intention",
+    color="Intention",
+    text_auto=True,
+    color_discrete_map={"Has Intention": "#2ecc71", "No Intention": "#e74c3c"}
 )
 
 st.plotly_chart(fig1, use_container_width=True)
@@ -139,6 +151,26 @@ if "EducationSector" in df.columns:
     )
 
     st.plotly_chart(fig3, use_container_width=True)
+
+# =====================================================
+# KEY TRAITS DISTRIBUTION
+# =====================================================
+
+if "KeyTraits" in df.columns:
+    st.subheader("Key Traits Distribution")
+
+    traits_counts = df["KeyTraits"].value_counts().reset_index()
+    traits_counts.columns = ["KeyTrait", "Count"]
+
+    fig_kt = px.bar(
+        traits_counts,
+        x="KeyTrait",
+        y="Count",
+        color="KeyTrait",
+        text_auto=True
+    )
+
+    st.plotly_chart(fig_kt, use_container_width=True)
 
 # =====================================================
 # TRAIT ANALYSIS
@@ -197,7 +229,8 @@ if len(available_traits) > 0:
         x="Trait",
         y="Average Score",
         color="Group",
-        barmode="group"
+        barmode="group",
+        color_discrete_map={"Has Intention": "#2ecc71", "No Intention": "#e74c3c"}
     )
 
     st.plotly_chart(fig5, use_container_width=True)
