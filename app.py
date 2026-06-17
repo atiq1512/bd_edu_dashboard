@@ -263,7 +263,7 @@ intention_rate = (students_with_intention / total_students * 100) if total_stude
 st.markdown(f"""
 <div class="dash-header">
     <div class="dash-header-title"><span>◈</span> Entrepreneurial Intention Dashboard</div>
-    <div class="dash-header-meta">{total_students} students · FYP 2025</div>
+    <div class="dash-header-meta">{total_students} students</div>
 </div>
 """, unsafe_allow_html=True)
 
