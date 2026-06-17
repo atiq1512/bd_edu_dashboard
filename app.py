@@ -18,7 +18,7 @@ st.set_page_config(
 
 @st.cache_data
 def load_data():
-    df = pd.read_csv("data.csv")
+    df = pd.read_csv("cleaned_data.csv")
 
     # Derive IntentionStatus from entrepreneurial trait scores
     # A student is considered to have entrepreneurial intention
