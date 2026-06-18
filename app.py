@@ -10,7 +10,8 @@ import plotly.graph_objects as go
 st.set_page_config(
     page_title="Entrepreneurial Intention Dashboard",
     page_icon="📊",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
 
 # =====================================================
